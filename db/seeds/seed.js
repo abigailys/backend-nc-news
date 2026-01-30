@@ -1,46 +1,81 @@
 const db = require("../connection")
+const format = require("pg-format")
 
-const seed = ({ topicData, userData, articleData, commentData }) => {
-  return db.query(`
+async function seed({ topicData, userData, articleData, commentData }) {
+  // 1. Drop existing tables
+  await db.query(`
       DROP TABLE IF EXISTS comments;
       DROP TABLE IF EXISTS articles;
       DROP TABLE IF EXISTS users;
       DROP TABLE IF EXISTS topics;
     `)
-    .then(() => {
-      return db.query(`
+
+  // 2. Create new tables
+  await db.query(`
         CREATE TABLE topics (
-          slug SERIAL PRIMARY KEY,
-          description TEXT,
-          img_url TEXT
+          slug VARCHAR(100) PRIMARY KEY,
+          description VARCHAR,
+          img_url VARCHAR(1000)
         );
         
         CREATE TABLE users (
           username VARCHAR(30) PRIMARY KEY,
           name VARCHAR(100),
-          avatar_url TEXT
+          avatar_url VARCHAR(1000)
         );
 
         CREATE TABLE articles (
           article_id SERIAL PRIMARY KEY,
           title VARCHAR(100),
-          topic VARCHAR(100),
-          author VARCHAR(50),
+          topic VARCHAR(100) REFERENCES topics(slug) ON DELETE SET NULL,
+          author VARCHAR(50) REFERENCES users(username) ON DELETE SET NULL,
           body TEXT,
-          created_at TIMESTAMP,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           votes INT DEFAULT 0,
-          article_img_url TEXT
+          article_img_url VARCHAR(1000)
         );
 
         CREATE TABLE comments (
           comment_id SERIAL PRIMARY KEY,
-          article_id INT,
+          article_id INT NOT NULL REFERENCES articles(article_id) ON DELETE CASCADE,
           body TEXT,
           votes INT DEFAULT 0,
-          author VARCHAR(50),
-          created_at TIMESTAMP
+          author VARCHAR(50) REFERENCES users(username),
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
         `)
-    })
+
+  // 3. Insert topic data
+  const formattedTopics = topicData.map((topic) => {
+    return [topic.slug, topic.description, topic.img_url]
+  })
+  const topicQueryStr = format(`INSERT INTO topics (slug, description, img_url) VALUES %L`, formattedTopics)
+
+  await db.query(topicQueryStr);
+
+  // 4. Insert user data
+  const formattedUsers = userData.map((user) => {
+    return [user.username, user.name, user.avatar_url]
+  })
+
+  const userQueryStr = format(`INSERT INTO users (username, name, avatar_url) VALUES %L`, formattedUsers)
+
+  await db.query(userQueryStr);
+
+
+  // 5. Insert article data
+  const formattedArticles = articleData.map((article) => {
+    return [article.title, article.topic, article.author, article.body, article.created_at, article.votes, article.article_img_url]
+  })
+  const articleQueryStr = format('INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url) VALUES %L', formattedArticles);
+  await db.query(articleQueryStr);
+
+  // 5. Insert comment data
+  console.log("commentData: ", commentData)
+  // const formattedComments = commentData.map((article) => {
+  //   return []
+  // })
+  // const commentQueryStr = format('INSERT INTO comments () VALUES %L', formattedComments);
+  // await db.query(commentQueryStr);
 };
 module.exports = seed;
