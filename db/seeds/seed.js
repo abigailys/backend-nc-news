@@ -67,11 +67,12 @@ async function seed({ topicData, userData, articleData, commentData }) {
   const formattedArticles = articleData.map((article) => {
     return [article.title, article.topic, article.author, article.body, article.created_at, article.votes, article.article_img_url]
   })
-  const articleQueryStr = format('INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url) VALUES %L', formattedArticles);
-  await db.query(articleQueryStr);
+  const articleQueryStr = format('INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url) VALUES %L RETURNING *', formattedArticles);
+  articleResult = await db.query(articleQueryStr);
 
   // 5. Insert comment data
-  console.log("commentData: ", commentData)
+  articleResult.rows
+  // console.log("commentData: ", commentData)
   // const formattedComments = commentData.map((article) => {
   //   return []
   // })
