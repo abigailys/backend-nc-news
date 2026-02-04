@@ -1,5 +1,6 @@
 const db = require("../connection")
 const format = require("pg-format")
+const {createLookupObject} = require("./seedUtils.js")
 
 async function seed({ topicData, userData, articleData, commentData }) {
   // 1. Drop existing tables
@@ -67,16 +68,20 @@ async function seed({ topicData, userData, articleData, commentData }) {
   const formattedArticles = articleData.map((article) => {
     return [article.title, article.topic, article.author, article.body, article.created_at, article.votes, article.article_img_url]
   })
-  const articleQueryStr = format('INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url) VALUES %L RETURNING *', formattedArticles);
-  articleResult = await db.query(articleQueryStr);
+  const articleQueryStr = format('INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url) VALUES %L', formattedArticles);
+  await db.query(articleQueryStr);
 
   // 5. Insert comment data
-  articleResult.rows
-  // console.log("commentData: ", commentData)
-  // const formattedComments = commentData.map((article) => {
-  //   return []
-  // })
-  // const commentQueryStr = format('INSERT INTO comments () VALUES %L', formattedComments);
-  // await db.query(commentQueryStr);
+  articleData = await db.query(`SELECT * FROM articles`)
+  const articlesLookup = createLookupObject(articleData.rows, "title", "article_id")
+
+  const formattedComments = commentData.map((comment) => {
+    const articleId = articlesLookup[comment.article_title]
+    return [articleId, comment.body, comment.votes, comment.author, comment.created_at]
+  })
+
+  const commentQueryStr = format('INSERT INTO comments (article_id, body, votes, author, created_at) VALUES %L RETURNING *', formattedComments)
+  await db.query(commentQueryStr);
+
 };
 module.exports = seed;
