@@ -10,6 +10,9 @@ app.use(express.json())
 const topicsRouter = require("./routes/topics.routes.js")
 app.use("/api/topics", topicsRouter) // anything starting /api/topics goes to topics router
 
+const articlesRouter = require("./routes/articles.routes.js")
+app.use("/api/articles", articlesRouter)
+
 // app.use()
 // this is a function Express provides to "hook stuff up" to the server
 

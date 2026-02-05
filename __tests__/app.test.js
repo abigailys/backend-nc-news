@@ -46,7 +46,7 @@ describe("/api/articles", () => {
 
         test("Each article object has properties: author, title, article_id, topic, created_at, votes, article_img_url", async () => {
             const { body: { articles } } = await request(app)
-                .get("/api/topics");
+                .get("/api/articles");
             articles.forEach((article) => {
                 expect(article.author).toBeString();
                 expect(article.title).toBeString();
@@ -60,7 +60,7 @@ describe("/api/articles", () => {
 
         test("Each article object has properties: comment_count", async () => {
             const { body: { articles } } = await request(app)
-                .get("/api/topics");
+                .get("/api/articles");
             articles.forEach((article) => {
                 expect(article.comment_count).toBeNumber();
             });
@@ -68,10 +68,18 @@ describe("/api/articles", () => {
 
         test("Each article object does not have property: body", async () => {
             const { body: { articles } } = await request(app)
-                .get("/api/topics");
+                .get("/api/articles");
             articles.forEach((article) => {
                 expect(article).not.toHaveProperty("body");
             });
         });
+
+        test("Array of article objects are sorted by date in descending order", async () => {
+            const { body: { articles } } = await request(app)
+                .get("/api/articles");
+            expect(articles).toBeSortedBy("created_at", {
+                descending: true,
+            });
+        })
     })
 })
