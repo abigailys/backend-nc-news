@@ -15,22 +15,22 @@ async function seed({ topicData, userData, articleData, commentData }) {
   await db.query(`
         CREATE TABLE topics (
           slug VARCHAR(100) PRIMARY KEY,
-          description VARCHAR,
+          description VARCHAR NOT NULL,
           img_url VARCHAR(1000)
         );
         
         CREATE TABLE users (
           username VARCHAR(30) PRIMARY KEY,
-          name VARCHAR(100),
+          name VARCHAR(100) NOT NULL,
           avatar_url VARCHAR(1000)
         );
 
         CREATE TABLE articles (
           article_id SERIAL PRIMARY KEY,
-          title VARCHAR(100),
-          topic VARCHAR(100) REFERENCES topics(slug) ON DELETE SET NULL,
+          title VARCHAR(100) NOT NULL,
+          topic VARCHAR(100) NOT NULL REFERENCES topics(slug) ON DELETE SET NULL,
           author VARCHAR(50) REFERENCES users(username) ON DELETE SET NULL,
-          body TEXT,
+          body TEXT NOT NULL,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           votes INT DEFAULT 0,
           article_img_url VARCHAR(1000)
@@ -39,9 +39,9 @@ async function seed({ topicData, userData, articleData, commentData }) {
         CREATE TABLE comments (
           comment_id SERIAL PRIMARY KEY,
           article_id INT NOT NULL REFERENCES articles(article_id) ON DELETE CASCADE,
-          body TEXT,
+          body TEXT NOT NULL,
           votes INT DEFAULT 0,
-          author VARCHAR(50) REFERENCES users(username),
+          author VARCHAR(50) REFERENCES users(username) ON DELETE SET NULL,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
         `)
