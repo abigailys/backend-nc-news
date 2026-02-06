@@ -23,6 +23,13 @@ exports.fetchArticles = async () => {
 exports.fetchArticleById = async (articleId) => {
     const awaitingQuery = await db.query(`
         SELECT * FROM articles WHERE article_id = $1`, [articleId]
-        )
-    return awaitingQuery.rows[0];
+    )
+
+    if (awaitingQuery.rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "ID Not Found" })
+    }
+    else {
+        return awaitingQuery.rows[0];
+    }
+
 }

@@ -90,20 +90,36 @@ describe("/api/articles", () => {
                 expect(article.article_id).toBe(5);
 
             })
-        })
 
-        test("Article object has properties: author, title, article_id, body, topic, created_at, votes, article_img_url", async () => {
-            const { body: { article } } = await request(app)
-                .get("/api/articles/7")
-                .expect(200)
-            expect(article.author).toBeString();
-            expect(article.title).toBeString();
-            expect(article.article_id).toBe(7);
-            expect(article.body).toBeString();
-            expect(article.topic).toBeString();
-            expect(article.created_at).toBeString();
-            expect(article.votes).toBeNumber();
-            expect(article.article_img_url).toBeString();
+            test("Article object has properties: author, title, article_id, body, topic, created_at, votes, article_img_url", async () => {
+                const { body: { article } } = await request(app)
+                    .get("/api/articles/7")
+                    .expect(200)
+                expect(article.author).toBeString();
+                expect(article.title).toBeString();
+                expect(article.article_id).toBe(7);
+                expect(article.body).toBeString();
+                expect(article.topic).toBeString();
+                expect(article.created_at).toBeString();
+                expect(article.votes).toBeNumber();
+                expect(article.article_img_url).toBeString();
+            })
+
+            test("404 - Responds with an error when article_id is a valid number but does not exist", async () => {
+                const { body } = await request(app)
+                    .get("/api/articles/999")
+                    .expect(404);
+
+                expect(body.message).toBe("ID Not Found");
+            });
+
+            test("400 - Responds with an error when article_id is not a valid data type", async () => {
+                const { body } = await request(app)
+                    .get("/api/articles/not-an-id")
+                    .expect(400);
+
+                expect(body.message).toBe("Bad Request");
+            });
         })
     })
 
