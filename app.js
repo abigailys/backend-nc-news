@@ -16,7 +16,17 @@ app.use("/api/articles", articlesRouter)
 const usersRouter = require("./routes/users.routes.js")
 app.use("/api/users", usersRouter)
 
-// app.use()
-// this is a function Express provides to "hook stuff up" to the server
+app.use((error, request, response, next) => {
+    if (error.status && error.msg) {
+        response.status(error.status).send({ message: error.msg })
+    } else {
+        next(error)
+    }
+})
+
+app.use((error, request, response, next) => {
+    console.log(error) // for internal debugging
+    response.status(500).send({ message: "Internal Server Error"})
+})
 
 module.exports = app;
