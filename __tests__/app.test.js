@@ -80,7 +80,35 @@ describe("/api/articles", () => {
             });
         })
     })
+
+    describe("/:article_id", () => {
+        describe("GET", () => {
+            test("200 - Responds with the correct article object", async () => {
+                const { body: { article } } = await request(app)
+                    .get("/api/articles/5")
+                    .expect(200)
+                expect(article.article_id).toBe(5);
+
+            })
+        })
+
+        test("Article object has properties: author, title, article_id, body, topic, created_at, votes, article_img_url", async () => {
+            const { body: { article } } = await request(app)
+                .get("/api/articles/7")
+                .expect(200)
+            expect(article.author).toBeString();
+            expect(article.title).toBeString();
+            expect(article.article_id).toBe(7);
+            expect(article.body).toBeString();
+            expect(article.topic).toBeString();
+            expect(article.created_at).toBeString();
+            expect(article.votes).toBeNumber();
+            expect(article.article_img_url).toBeString();
+        })
+    })
+
 })
+
 
 describe("/api/users", () => {
     describe("GET", () => {
@@ -92,7 +120,7 @@ describe("/api/users", () => {
         });
 
         test("Each user object has properties: username, name, avatar_url", async () => {
-            const { body : { users } } = await request(app)
+            const { body: { users } } = await request(app)
                 .get("/api/users")
                 .expect(200)
             users.forEach((user) => {

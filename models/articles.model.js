@@ -19,3 +19,10 @@ exports.fetchArticles = async () => {
         `)
     return awaitingQuery.rows;
 }
+
+exports.fetchArticleById = async (articleId) => {
+    const awaitingQuery = await db.query(`
+        SELECT * FROM articles WHERE article_id = $1`, [articleId]
+        )
+    return awaitingQuery.rows[0];
+}
