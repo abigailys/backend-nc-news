@@ -18,7 +18,7 @@ describe("/api/topics", () => {
             const { body } = await request(app)
                 .get("/api/topics")
                 .expect(200);
-            expect(body.topics).toBeArray();
+            expect(body.topics).toBeArray(); // Implicitly confirming body is an object with the key of topics
         });
 
         test("Each topic object has properties: slug, description, img_url", async () => {
@@ -36,8 +36,6 @@ describe("/api/topics", () => {
 describe("/api/articles", () => {
     describe("GET", () => {
         test("200 - Responds with an array on the key of articles", async () => {
-            // const abc = await request(app).get("/api/articles")
-            // console.log(abc)
             const { body } = await request(app)
                 .get("/api/articles")
                 .expect(200)
@@ -81,5 +79,27 @@ describe("/api/articles", () => {
                 descending: true,
             });
         })
+    })
+})
+
+describe("/api/users", () => {
+    describe("GET", () => {
+        test("200 - Responds with an array on the key of users", async () => {
+            const { body } = await request(app)
+                .get("/api/users")
+                .expect(200)
+            expect(body.users).toBeArray();
+        });
+
+        test("Each user object has properties: username, name, avatar_url", async () => {
+            const { body : { users } } = await request(app)
+                .get("/api/users")
+                .expect(200)
+            users.forEach((user) => {
+                expect(user.username).toBeString();
+                expect(user.name).toBeString();
+                expect(user.avatar_url).toBeString();
+            })
+        });
     })
 })

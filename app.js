@@ -13,6 +13,9 @@ app.use("/api/topics", topicsRouter) // anything starting /api/topics goes to to
 const articlesRouter = require("./routes/articles.routes.js")
 app.use("/api/articles", articlesRouter)
 
+const usersRouter = require("./routes/users.routes.js")
+app.use("/api/users", usersRouter)
+
 // app.use()
 // this is a function Express provides to "hook stuff up" to the server
 
