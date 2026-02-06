@@ -12,6 +12,15 @@ afterAll(() => {
     return db.end();
 })
 
+describe("Invalid Endpoint Error Handling", () => {
+    test("404 - Responds with an error message when path is not found", async () => {
+        const { body } = await request(app)
+            .get("/api/invalid-path")
+            .expect(404)
+        expect(body.message).toBe("Path Not Found")
+    })
+})
+
 describe("/api/topics", () => {
     describe("GET", () => {
         test("200 - Responds with an array on the key of topics", async () => {

@@ -16,6 +16,13 @@ app.use("/api/articles", articlesRouter)
 const usersRouter = require("./routes/users.routes.js")
 app.use("/api/users", usersRouter)
 
+
+// INVALID PATH CATCH-ALLL
+app.all("/*path", (req, res) => {
+    res.status(404).send({ message: "Path Not Found" });
+});
+
+// CUSTOM ERROR HANDLING FOR ALL MIDDLEWARE FUNCTIONS
 app.use((error, request, response, next) => {
     if (error.status && error.msg) {
         response.status(error.status).send({ message: error.msg })
@@ -24,6 +31,7 @@ app.use((error, request, response, next) => {
     }
 })
 
+// SAFETY NET FOR ALL UNHANDLED ERRORS
 app.use((error, request, response, next) => {
     console.log(error) // for internal debugging
     response.status(500).send({ message: "Internal Server Error"})
