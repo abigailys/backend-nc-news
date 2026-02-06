@@ -22,8 +22,9 @@ exports.fetchArticles = async () => {
 
 exports.fetchArticleById = async (articleId) => {
     const awaitingQuery = await db.query(`
-        SELECT * FROM articles WHERE article_id = $1`, [articleId]
-    )
+        SELECT * FROM articles 
+        WHERE article_id = $1
+        `, [articleId])
 
     if (awaitingQuery.rows.length === 0) {
         return Promise.reject({ status: 404, msg: "ID Not Found" })
@@ -32,4 +33,13 @@ exports.fetchArticleById = async (articleId) => {
         return awaitingQuery.rows[0];
     }
 
+}
+
+exports.fetchCommentsByArticleId = async (articleId) => {
+    const awaitingQuery = await db.query(`
+        SELECT * FROM comments 
+        WHERE article_id = $1
+        ORDER BY created_at DESC;
+        `, [articleId])
+    return awaitingQuery.rows;
 }

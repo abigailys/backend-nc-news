@@ -1,6 +1,6 @@
-const { retrieveArticles, retrieveArticleById } = require("../services/articles.service.js")
+const { retrieveArticles, retrieveArticleById, retrieveCommentsByArticleId } = require("../services/articles.service.js")
 
-exports.getArticles = async (request, response) => {
+exports.getArticles = async (request, response, next) => {
     try {
         const articles = await retrieveArticles();
         response.status(200).send({ articles: articles })
@@ -24,4 +24,20 @@ exports.getArticleById = async (request, response, next) => {
     catch (error) {
         next(error);
     };
+}
+
+exports.getCommentsByArticleId = async (request, response, next) => {
+    try {
+        const { articleId } = request.params
+
+        if (isNaN(articleId)) {
+            return next({ status: 400, msg: "Bad Request" })
+        }
+
+        const comments = await retrieveCommentsByArticleId(articleId);
+        response.status(200).send({ comments: comments })
+    }
+    catch (error) {
+        next(error);
+    }
 }

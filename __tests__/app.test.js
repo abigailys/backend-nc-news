@@ -114,6 +114,14 @@ describe("/api/articles", () => {
                 expect(article.article_img_url).toBeString();
             })
 
+            test("400 - Responds with an error when article_id is not a valid data type", async () => {
+                const { body } = await request(app)
+                    .get("/api/articles/not-an-id")
+                    .expect(400);
+
+                expect(body.message).toBe("Bad Request");
+            });
+
             test("404 - Responds with an error when article_id is a valid number but does not exist", async () => {
                 const { body } = await request(app)
                     .get("/api/articles/999")
@@ -122,18 +130,67 @@ describe("/api/articles", () => {
                 expect(body.message).toBe("ID Not Found");
             });
 
-            test("400 - Responds with an error when article_id is not a valid data type", async () => {
-                const { body } = await request(app)
-                    .get("/api/articles/not-an-id")
-                    .expect(400);
 
-                expect(body.message).toBe("Bad Request");
-            });
+        })
+
+        describe("/comments", () => {
+            describe("GET", () => {
+                test("200 - Responds with an array on the key of comments", async () => {
+                    const { body } = await request(app)
+                        .get("/api/articles/1/comments")
+                        .expect(200)
+                    expect(body.comments).toBeArray();
+                });
+
+                test("Array of comments corresponds to the correct article_id", async () => {
+                    const { body: { comments } } = await request(app)
+                        .get("/api/articles/2/comments")
+                    comments.forEach((comment) => {
+                        expect(comment.article_id).toBe(2);
+                    })
+                });
+
+                test("Each comment object has properties: comment_id, votes, created_at, author, body, article_id", async () => {
+                    const { body: { comments } } = await request(app)
+                        .get("/api/articles/3/comments")
+                    comments.forEach((comment) => {
+                        expect(comment.comment_id).toBeNumber();
+                        expect(comment.votes).toBeNumber();
+                        expect(comment.created_at).toBeString();
+                        expect(comment.author).toBeString();
+                        expect(comment.body).toBeString();
+                        expect(comment.article_id).toBe(3);
+                    })
+                })
+
+                test("Array of comments are sorted by created_at in descending order", async () => {
+                    const { body: { comments } } = await request(app)
+                        .get("/api/articles/2/comments")
+                        .expect(200)
+                    expect(comments).toBeSortedBy("created_at", {
+                        descending: true
+                    });
+                })
+
+                test("400 - Responds with an error when article_id is not a valid data type", async () => {
+                    const { body } = await request(app)
+                        .get("/api/articles/not-an-id/comments")
+                        .expect(400);
+                    expect(body.message).toBe("Bad Request");
+                });
+
+                test("404 - Responds with an error when article_id is a valid number but does not exist", async () => {
+                    const { body } = await request(app)
+                        .get("/api/articles/999/comments")
+                        .expect(404);
+                    expect(body.message).toBe("ID Not Found");
+                });
+
+            })
         })
     })
 
 })
-
 
 describe("/api/users", () => {
     describe("GET", () => {
