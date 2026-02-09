@@ -16,6 +16,8 @@ app.use("/api/articles", articlesRouter)
 const usersRouter = require("./routes/users.routes.js")
 app.use("/api/users", usersRouter)
 
+const commentsRouter = require("./routes/comments.routes.js")
+app.use("/api/comments", commentsRouter)
 
 // INVALID PATH CATCH-ALLL
 app.all("/*path", (req, res) => {

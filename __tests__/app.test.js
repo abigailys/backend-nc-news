@@ -138,25 +138,25 @@ describe("/api/articles", () => {
         describe("PATCH", () => {
             test("Updates the correct article with new vote count", async () => {
                 const { body: { updatedArticle } } = await request(app)
-                .patch("/api/articles/2")
-                .send({ inc_votes: 2 })
-            expect(updatedArticle.article_id).toBe(2);
-            expect(updatedArticle.votes).toBe(2);
+                    .patch("/api/articles/2")
+                    .send({ inc_votes: 2 })
+                expect(updatedArticle.article_id).toBe(2);
+                expect(updatedArticle.votes).toBe(2);
             })
 
             test("200 - Responds with the updated article", async () => {
-                const { body : { updatedArticle } } = await request(app)
-                .patch("/api/articles/1")
-                .send({ inc_votes: -50 })
-                .expect(200)
-            expect(updatedArticle.article_id).toBe(1);
-            expect(updatedArticle.topic).toBeString();
-            expect(updatedArticle.author).toBeString();
-            expect(updatedArticle.body).toBeString();
-            expect(updatedArticle.created_at).toBeString();
-            expect(updatedArticle.title).toBeString();
-            expect(updatedArticle.votes).toBe(50);
-            expect(updatedArticle.article_img_url).toBeString();
+                const { body: { updatedArticle } } = await request(app)
+                    .patch("/api/articles/1")
+                    .send({ inc_votes: -50 })
+                    .expect(200)
+                expect(updatedArticle.article_id).toBe(1);
+                expect(updatedArticle.topic).toBeString();
+                expect(updatedArticle.author).toBeString();
+                expect(updatedArticle.body).toBeString();
+                expect(updatedArticle.created_at).toBeString();
+                expect(updatedArticle.title).toBeString();
+                expect(updatedArticle.votes).toBe(50);
+                expect(updatedArticle.article_img_url).toBeString();
             })
         })
 
@@ -218,8 +218,8 @@ describe("/api/articles", () => {
             describe("POST", () => {
                 test("Adds the correct comment username and comment body to the correct article", async () => {
                     const validUser = testData.userData[0].username
-                    
-                    const { body: { comment }}  = await request(app)
+
+                    const { body: { comment } } = await request(app)
                         .post("/api/articles/3/comments")
                         .send({ username: validUser, body: "Hello, I am adding a comment from supertest." })
                     expect(comment.article_id).toBe(3);
@@ -229,7 +229,7 @@ describe("/api/articles", () => {
 
                 test("201 - Responds with the posted comment", async () => {
                     const validUser = testData.userData[0].username
-                    
+
                     const { body: { comment } } = await request(app)
                         .post("/api/articles/2/comments")
                         .send({ username: validUser, body: "Hello again, I am adding another comment from supertest." })
@@ -248,19 +248,43 @@ describe("/api/articles", () => {
 })
 
 describe("/api/comments", () => {
-    describe("DELETE", () => {
-        test("Deletes the given comment by comment_id", async () => {
-            const { body } = await request(app)
-                .delete("/api/comments/2")
-            expect()
-        });
+    describe("/:comment_id", () => {
+        describe("GET", () => {
+            test("200 - Responds with the correct comment object", async () => {
+                const { body: { comment } } = await request(app)
+                    .get("/api/comments/1")
+                    .expect(200)
+                expect(comment.comment_id).toBe(1);
+            })
 
-        test("204 - Responds with no content", async () => {
+            test("Comment object has properties: comment_id, article_id, body, votes, author, created_at", async () => {
+                const { body: { comment } } = await request(app)
+                    .get("/api/comments/2")
+                expect(comment.comment_id).toBe(2);
+                expect(comment.article_id).toBeNumber();
+                expect(comment.body).toBeString();
+                expect(comment.votes).toBeNumber();
+                expect(comment.author).toBeString();
+                expect(comment.created_at).toBeString();
+            })
+        })
+    })
+
+    describe("DELETE", () => {
+        test("204 - Deletes the given comment by comment_id and responds with no content", async () => {
+            await request(app)
+                .get("/api/comments/2")
+                .expect(200)
+
             const { body } = await request(app)
                 .delete("/api/comments/2")
                 .expect(204)
-            expect(body).toBe(null);
-        })
+            expect(body).toEqual({});
+
+            await request(app)
+                .get("/api/comments/2")
+                .expect(404)
+        });
     })
 })
 
