@@ -1,4 +1,4 @@
-const { fetchArticles, fetchArticleById, fetchCommentsByArticleId, insertComment } = require("../models/articles.model.js")
+const { fetchArticles, fetchArticleById, fetchCommentsByArticleId, insertComment, incrementVotes } = require("../models/articles.model.js")
 
 exports.retrieveArticles = async () => {
     const articlesData = await fetchArticles();
@@ -18,4 +18,9 @@ exports.retrieveCommentsByArticleId = async (articleId) => {
 exports.createComment = async (articleId, username, body) => {
     const commentData = await Promise.all([fetchArticleById(articleId), insertComment(articleId, username, body)])
     return commentData[1];
+}
+
+exports.updateVotes = async (articleId, inc_votes) => {
+    const updatedArticleData = await Promise.all([fetchArticleById(articleId), incrementVotes(articleId, inc_votes)])
+    return updatedArticleData[1];
 }

@@ -52,3 +52,13 @@ exports.insertComment = async (articleId, username, body) => {
         `, [articleId, body, username])
     return awaitingQuery.rows;
 }
+
+exports.incrementVotes = async (articleId, inc_votes) => {
+    const awaitingQuery = await db.query(`
+        UPDATE articles
+        SET votes = votes + $2
+        WHERE article_id = $1
+        RETURNING *;
+        `, [articleId, inc_votes])
+    return awaitingQuery.rows;
+}

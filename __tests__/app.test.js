@@ -135,6 +135,31 @@ describe("/api/articles", () => {
 
         })
 
+        describe("PATCH", () => {
+            test("Updates the correct article with new vote count", async () => {
+                const { body: { updatedArticle } } = await request(app)
+                .patch("/api/articles/2")
+                .send({ inc_votes: 2 })
+            expect(updatedArticle.article_id).toBe(2);
+            expect(updatedArticle.votes).toBe(2);
+            })
+
+            test("200 - Responds with the updated article", async () => {
+                const { body : { updatedArticle } } = await request(app)
+                .patch("/api/articles/1")
+                .send({ inc_votes: -50 })
+                .expect(200)
+            expect(updatedArticle.article_id).toBe(1);
+            expect(updatedArticle.topic).toBeString();
+            expect(updatedArticle.author).toBeString();
+            expect(updatedArticle.body).toBeString();
+            expect(updatedArticle.created_at).toBeString();
+            expect(updatedArticle.title).toBeString();
+            expect(updatedArticle.votes).toBe(50);
+            expect(updatedArticle.article_img_url).toBeString();
+            })
+        })
+
         describe("/comments", () => {
             describe("GET", () => {
                 test("200 - Responds with an array on the key of comments", async () => {
@@ -220,6 +245,23 @@ describe("/api/articles", () => {
         })
     })
 
+})
+
+describe("/api/comments", () => {
+    describe("DELETE", () => {
+        test("Deletes the given comment by comment_id", async () => {
+            const { body } = await request(app)
+                .delete("/api/comments/2")
+            expect()
+        });
+
+        test("204 - Responds with no content", async () => {
+            const { body } = await request(app)
+                .delete("/api/comments/2")
+                .expect(204)
+            expect(body).toBe(null);
+        })
+    })
 })
 
 describe("/api/users", () => {
