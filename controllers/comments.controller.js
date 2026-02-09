@@ -25,7 +25,7 @@ exports.removeComment = async (request, response, next) => {
         }
 
         const comment = await deleteCommentById(commentId);
-        response.status(204).send({ comment: comment })
+        response.sendStatus(204)
     }
     catch (error) {
         next(error);
