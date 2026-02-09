@@ -13,3 +13,11 @@ exports.fetchCommentById = async (commentId) => {
         return awaitingQuery.rows[0];
     }
 }
+
+exports.deleteComment = async (commentId) => {
+    const awaitingQuery = await db.query(`
+        DELETE FROM comments
+        WHERE comment_id = $1
+        `, [commentId])
+    return awaitingQuery.rows;
+}
