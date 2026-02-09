@@ -68,7 +68,6 @@ exports.updateArticle = async (request, response, next) => {
 
         const { inc_votes } = request.body;
         const article = await updateVotes(articleId, inc_votes);
-        console.log("article: ", article)
         response.status(200).send({ updatedArticle: article[0] })
     }
     catch (error) {
