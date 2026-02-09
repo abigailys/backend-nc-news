@@ -1,4 +1,4 @@
-const { retrieveArticles, retrieveArticleById, retrieveCommentsByArticleId } = require("../services/articles.service.js")
+const { retrieveArticles, retrieveArticleById, retrieveCommentsByArticleId, createComment } = require("../services/articles.service.js")
 
 exports.getArticles = async (request, response, next) => {
     try {
@@ -31,11 +31,28 @@ exports.getCommentsByArticleId = async (request, response, next) => {
         const { articleId } = request.params
 
         if (isNaN(articleId)) {
-            return next({ status: 400, msg: "Bad Request" })
+            return next({ status: 400, msg: "Invalid article ID" })
         }
 
         const comments = await retrieveCommentsByArticleId(articleId);
         response.status(200).send({ comments: comments })
+    }
+    catch (error) {
+        next(error);
+    }
+}
+
+exports.postComment = async (request, response, next) => {
+    try {
+        const { articleId } = request.params
+        
+        if (isNaN(articleId)) {
+            return next({ status: 400, msg: "Invalid article ID"})
+        }
+
+        const { username, body } = request.body
+        const comment = await createComment(articleId, username, body);
+        response.status(201).send({ comment: comment[0]})
     }
     catch (error) {
         next(error);

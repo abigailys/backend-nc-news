@@ -4,6 +4,8 @@ const data = require("../db/data/test-data");
 const request = require("supertest");
 const app = require("../app.js")
 
+const testData = require("../db/data/test-data/index.js")
+
 beforeEach(() => {
     return seed(data);
 })
@@ -176,7 +178,7 @@ describe("/api/articles", () => {
                     const { body } = await request(app)
                         .get("/api/articles/not-an-id/comments")
                         .expect(400);
-                    expect(body.message).toBe("Bad Request");
+                    expect(body.message).toBe("Invalid article ID");
                 });
 
                 test("404 - Responds with an error when article_id is a valid number but does not exist", async () => {
@@ -186,6 +188,34 @@ describe("/api/articles", () => {
                     expect(body.message).toBe("ID Not Found");
                 });
 
+            })
+
+            describe("POST", () => {
+                test("Adds the correct comment username and comment body to the correct article", async () => {
+                    const validUser = testData.userData[0].username
+                    
+                    const { body: { comment }}  = await request(app)
+                        .post("/api/articles/3/comments")
+                        .send({ username: validUser, body: "Hello, I am adding a comment from supertest." })
+                    expect(comment.article_id).toBe(3);
+                    expect(comment.author).toBe(validUser);
+                    expect(comment.body).toBe("Hello, I am adding a comment from supertest.");
+                });
+
+                test("201 - Responds with the posted comment", async () => {
+                    const validUser = testData.userData[0].username
+                    
+                    const { body: { comment } } = await request(app)
+                        .post("/api/articles/2/comments")
+                        .send({ username: validUser, body: "Hello again, I am adding another comment from supertest." })
+                        .expect(201)
+                    expect(comment.article_id).toBe(2);
+                    expect(comment.author).toBe(validUser);
+                    expect(comment.body).toBe("Hello again, I am adding another comment from supertest.");
+                    expect(comment.comment_id).toBeNumber();
+                    expect(comment.votes).toBe(0);
+                    expect(comment.created_at).toBeString();
+                });
             })
         })
     })
