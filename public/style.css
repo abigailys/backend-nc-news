@@ -1,0 +1,36 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+header {
+    background-color: rgb(13, 73, 91);
+    color: rgb(255, 156, 56);
+    padding: 1.5rem;
+    text-align: center;
+}
+
+main {
+    max-width: 95%;
+    text-align: center;
+    padding: 5px;
+}
+
+
+ul {
+    border: 2px solid red;
+    padding-left: 0;
+    list-style-type: none;
+
+}
+
+.endpoint-card {
+    background-color: rgb(245, 237, 220);
+    border: 2px;
+    border-radius: 5%;
+    padding: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}

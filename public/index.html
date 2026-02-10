@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="./favicon.png">
+    <title>NC News API</title>
+</head>
+
+<body>
+    <header> <!-- Page title and introductory text-->
+        <h1>NC News API</h1>
+        <p>An API for accessing and managing news articles, 
+    topics, and user comments. It allows developers to retrieve, 
+    post, and update data for a community-led news platform.</p>
+    </header>
+    <main> <!-- The rest of the page content-->
+        <h2>Available endpoints</h2>
+        <ul>
+            <li class="endpoint-card">
+                <h3>GET /api/topics</h3>
+                <p>Retrieve a list of all topics.</p>
+
+                <h4>Example response:</h4>
+                <pre>
+  <code>
+{
+  "topics": [
+    {
+      "slug": "coding",
+      "description": "Code is love, code is life"
+    },
+    {
+      "slug": "football",
+      "description": "FOOTIE!"
+    },
+    {
+      "slug": "cooking",
+      "description": "Hey good looking, what you got cooking?"
+    }
+  ]
+}
+  </code>
+</pre>
+            </li>
+
+            <li class="endpoint-card">
+                <h3>GET /api/articles</h3>
+                <p>Retrieve a list of all articles.</p>
+            </li>
+
+            <li class="endpoint-card">
+                <h3>GET /api/users</h3>
+                <p>Retrieve a list of all users.</p>
+            </li>
+
+            <li class="endpoint-card">
+                <h3>GET /api/articles/:article_id</h3>
+                <p>Retrieve article by article ID.</p>
+            </li>
+
+            <li class="endpoint-card">
+                <h3>GET /api/articles/:article_id/comments</h3>
+                <p>Retrieve a list of comments for an article by article ID.</p>
+            </li>
+
+            <li class="endpoint-card">
+                <h3>POST /api/articles/:article_id/comments</h3>
+                <p>Add a comment to an article.</p>
+            </li>
+
+            <li class="endpoint-card">
+                <h3>PATCH /api/articles/:article_id</h3>
+                <p>Update an article by article ID.</p>
+            </li>
+
+            <li class="endpoint-card">
+                <h3>CORE: DELETE /api/comments/:comment_id</h3>
+                <p>Delete a comment by comment ID.</p>
+            </li>
+        </ul>
+    </main>
+</body>
+
+</html>
