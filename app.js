@@ -6,6 +6,9 @@ const app = express()
 // setup, e.g. enabling JSON
 app.use(express.json())
 
+// Serve static files from the "public" folder
+app.use("/api", express.static('public'))
+
 // hook up the router
 const topicsRouter = require("./routes/topics.routes.js")
 app.use("/api/topics", topicsRouter) // anything starting /api/topics goes to topics router
