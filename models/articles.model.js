@@ -1,6 +1,13 @@
 const db = require("../db/connection.js")
 
-exports.fetchArticles = async () => {
+exports.fetchArticles = async (sort_by = "created_at", order = "desc") => {
+    const validSortBy= ["author", "title", "article_id", "topic", "created_at", "votes", "article_img_url", "comment_count"];
+    const validOrder = ["asc", "desc"];
+
+    if (!validSortBy.includes(sort_by) || !validOrder.includes(order)) {
+        return Promise.reject({ status: 400, msg: "Bad Request" });
+    }
+    
     const awaitingQuery = await db.query(`
         SELECT 
             articles.author,
@@ -15,7 +22,7 @@ exports.fetchArticles = async () => {
         LEFT JOIN comments
         ON articles.article_id = comments.article_id
         GROUP BY articles.article_id
-        ORDER BY articles.created_at DESC;
+        ORDER BY articles.${sort_by} ${order};
         `)
     return awaitingQuery.rows;
 }

@@ -1,7 +1,7 @@
 const { fetchArticles, fetchArticleById, fetchCommentsByArticleId, insertComment, incrementVotes } = require("../models/articles.model.js")
 
-exports.retrieveArticles = async () => {
-    const articlesData = await fetchArticles();
+exports.retrieveArticles = async (sort_by, order) => {
+    const articlesData = await fetchArticles(sort_by, order);
     return articlesData;
 }
 

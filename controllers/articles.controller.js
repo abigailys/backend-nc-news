@@ -2,7 +2,8 @@ const { retrieveArticles, retrieveArticleById, retrieveCommentsByArticleId, crea
 
 exports.getArticles = async (request, response, next) => {
     try {
-        const articles = await retrieveArticles();
+        const { sort_by, order } = request.query;
+        const articles = await retrieveArticles(sort_by, order);
         response.status(200).send({ articles: articles })
     }
     catch (error) {

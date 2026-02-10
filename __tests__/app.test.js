@@ -90,6 +90,40 @@ describe("/api/articles", () => {
                 descending: true,
             });
         })
+
+        describe("Sorting queries", () => {
+            test("200 - Sorts by specified sort_by query", async () => {
+                const { body: { articles } } = await request(app)
+                    .get("/api/articles?sort_by=title")
+                    .expect(200)
+                expect(articles).toBeSortedBy("title", {
+                    descending: true
+                })
+            })
+
+            test("200 - Sorts by specified ascending order", async () => {
+                const { body: { articles } } = await request(app)
+                    .get("/api/articles?order=asc")
+                    .expect(200)
+                expect(articles).toBeSortedBy("created_at", {
+                    descending: false
+                })
+            })
+
+            test("400 - responds with error for invalid sort_by query", async () => {
+                const { body } = await request(app)
+                    .get("/api/articles?sort_by=not-a-column")
+                    .expect(400);
+                expect(body.message).toBe("Bad Request");
+            })
+
+            test("400 - responds with error for invalid order query", async () => {
+                const { body } = await request(app)
+                    .get("/api/articles?order=not-an-accepted-order")
+                    .expect(400);
+                expect(body.message).toBe("Bad Request");
+            })
+        })
     })
 
     describe("/:article_id", () => {
