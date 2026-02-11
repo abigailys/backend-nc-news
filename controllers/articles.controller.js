@@ -51,7 +51,12 @@ exports.postComment = async (request, response, next) => {
             return next({ status: 400, msg: "Invalid article ID"})
         }
 
+        if (!request.body.username || !request.body.body) {
+            return next({ status: 400, msg: "Bad Request" })
+        }
+
         const { username, body } = request.body
+
         const comment = await createComment(articleId, username, body);
         response.status(201).send({ comment: comment[0]})
     }

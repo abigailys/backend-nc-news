@@ -124,6 +124,8 @@ describe("/api/articles", () => {
                 expect(body.message).toBe("Bad Request");
             })
         })
+
+        
     })
 
     describe("/:article_id", () => {
@@ -274,6 +276,33 @@ describe("/api/articles", () => {
                     expect(comment.comment_id).toBeNumber();
                     expect(comment.votes).toBe(0);
                     expect(comment.created_at).toBeString();
+                });
+
+                test("404 - Responds with an error when username does not exist", async () => {
+                    const { body } = await request(app)
+                        .post("/api/articles/3/comments")
+                        .send({ username: "not-a-valid-user", body: "Hello, I am adding a comment from supertest." })
+                        .expect(404)
+                    expect(body.message).toBe("User Not Found");
+                    
+                });
+
+                test("400 - Responds with an error when no username is passed in", async () => {
+                    const { body } = await request(app)
+                        .post("/api/articles/3/comments")
+                        .send({ body: "Hello, I am adding a comment from supertest." })
+                        .expect(400)
+                    expect(body.message).toBe("Bad Request");
+                });
+
+                test("400 - Responds with an error when no comment body is passed in", async () => {
+                    const validUser = testData.userData[0].username
+
+                    const { body } = await request(app)
+                        .post("/api/articles/3/comments")
+                        .send({ username: validUser })
+                        .expect(400)
+                    expect(body.message).toBe("Bad Request");
                 });
             })
         })
