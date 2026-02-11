@@ -125,7 +125,7 @@ describe("/api/articles", () => {
             })
         })
 
-        
+
     })
 
     describe("/:article_id", () => {
@@ -284,7 +284,7 @@ describe("/api/articles", () => {
                         .send({ username: "not-a-valid-user", body: "Hello, I am adding a comment from supertest." })
                         .expect(404)
                     expect(body.message).toBe("User Not Found");
-                    
+
                 });
 
                 test("400 - Responds with an error when no username is passed in", async () => {
@@ -352,6 +352,27 @@ describe("/api/comments", () => {
 })
 
 describe("/api/users", () => {
+    describe("/:username", () => {
+        describe("GET", () => {
+            test("200 - Responds with the correct user object, has properties: username, name, avatar_url", async () => {
+                const validUser = testData.userData[0].username
+                const { body: { user } } = await request(app)
+                    .get(`/api/users/${validUser}`)
+                    .expect(200)
+                expect(user.username).toBe(validUser);
+                expect(user.name).toBeString();
+                expect(user.avatar_url).toBeString();
+            })
+
+            test("404 - Responds with an error when user does not exist", async () => {
+                const { body } = await request(app)
+                    .get("/api/users/non-existent-user")
+                    .expect(404);
+
+                expect(body.message).toBe("User Not Found");
+            });
+        })
+    })
     describe("GET", () => {
         test("200 - Responds with an array on the key of users", async () => {
             const { body } = await request(app)
