@@ -57,7 +57,6 @@ exports.insertComment = async (articleId, username, body) => {
         VALUES ($1, $2, $3)
         RETURNING *;
         `, [articleId, body, username])
-    console.log(awaitingQuery)
     if (awaitingQuery.rows.length === 0) {
         return Promise.reject({ status: 404, msg: "User Not Found" })
     }
