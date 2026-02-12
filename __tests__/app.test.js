@@ -346,6 +346,20 @@ describe("/api/comments", () => {
                 expect(comment.author).toBeString();
                 expect(comment.created_at).toBeString();
             })
+
+            test("400 - Responds with an error when comment_id is not a valid data type", async () => {
+                const { body } = await request(app)
+                .get("/api/comments/not-a-valid-id")
+                .expect(400)
+                expect(body.message).toBe("Bad Request");
+            });
+
+            test("404 - Responds with an error when comment_id is a valid number but does not exist", async () => {
+                const { body } = await request(app)
+                .get("/api/comments/999")
+                .expect(404)
+                expect(body.message).toBe("ID Not Found");
+            });
         })
         
         describe("DELETE", () => {
@@ -364,8 +378,6 @@ describe("/api/comments", () => {
                 .expect(404)
             });
             
-            // 404 - comment_id does not exist
-            // 400 - not a valid comment ID
             test("400 - Responds with an error when comment_id is not a valid data type", async () => {
                 const { body } = await request(app)
                 .delete("/api/comments/not-a-valid-id")
