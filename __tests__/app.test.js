@@ -194,6 +194,22 @@ describe("/api/articles", () => {
                 expect(updatedArticle.votes).toBe(50);
                 expect(updatedArticle.article_img_url).toBeString();
             })
+
+            test("400 - Responds with an error when article_id is not a valid data type", async () => {
+                    const { body } = await request(app)
+                        .patch("/api/articles/not-an-id")
+                        .send({ inc_votes: -50 })
+                        .expect(400)
+                    expect(body.message).toBe("Invalid article ID");
+                });
+
+                test("400 - Responds with an error when inc_votes is not a valid data type", async () => {
+                    const { body } = await request(app)
+                        .patch("/api/articles/3")
+                        .send({ inc_votes: "abc" })
+                        .expect(400)
+                    expect(body.message).toBe("Invalid vote count");
+                });
         })
 
         describe("/comments", () => {

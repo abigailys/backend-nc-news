@@ -73,6 +73,11 @@ exports.updateArticle = async (request, response, next) => {
         }
 
         const { inc_votes } = request.body;
+
+        if (isNaN(inc_votes)) {
+            return next({ status: 400, msg: "Invalid vote count"})
+        }
+
         const article = await updateVotes(articleId, inc_votes);
         response.status(200).send({ updatedArticle: article[0] })
     }
