@@ -125,6 +125,26 @@ describe("/api/articles", () => {
             })
         })
 
+        describe("Topic query", () => {
+            test("200 - Filters by specified topic value", async () => {
+                const { body: { articles } } = await request(app)
+                    .get("/api/articles?topic=cats")
+                    .expect(200)
+                articles.forEach((article) => {
+                    expect(article.topic).toBe("cats")
+                });
+            });
+
+            test("404 - Responds with an error when specified topic does not exist", async () => {
+                const { body } = await request(app)
+                    .get("/api/articles?topic=dogs")
+                    .expect(404)
+
+                    expect(body.message).toBe("Topic not found")
+               
+            });
+        });
+
 
     })
 

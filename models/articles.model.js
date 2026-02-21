@@ -1,6 +1,6 @@
 const db = require("../db/connection.js")
 
-exports.fetchArticles = async (sort_by = "created_at", order = "desc") => {
+exports.fetchArticles = async (sort_by = "created_at", order = "desc", topic) => {
     const validSortBy= ["author", "title", "article_id", "topic", "created_at", "votes", "article_img_url", "comment_count"];
     const validOrder = ["asc", "desc"];
 
@@ -8,8 +8,7 @@ exports.fetchArticles = async (sort_by = "created_at", order = "desc") => {
         return Promise.reject({ status: 400, msg: "Bad Request" });
     }
     
-    const awaitingQuery = await db.query(`
-        SELECT 
+    let queryStr = `SELECT 
             articles.author,
             articles.title,
             articles.article_id,
@@ -20,10 +19,19 @@ exports.fetchArticles = async (sort_by = "created_at", order = "desc") => {
             CAST(COUNT(comments.comment_id) AS INT) AS comment_count
         FROM articles
         LEFT JOIN comments
-        ON articles.article_id = comments.article_id
-        GROUP BY articles.article_id
-        ORDER BY articles.${sort_by} ${order};
-        `)
+        ON articles.article_id = comments.article_id`;
+
+        const topicQuery = []
+    if (topic) {
+        queryStr += ` WHERE topic = $1`
+        topicQuery.push(topic);
+    }
+    
+    queryStr +=` GROUP BY articles.article_id
+        ORDER BY articles.${sort_by} ${order};`
+        
+    const awaitingQuery = await db.query(queryStr, topicQuery)
+    
     return awaitingQuery.rows;
 }
 

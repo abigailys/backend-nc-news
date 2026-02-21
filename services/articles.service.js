@@ -1,8 +1,12 @@
 const { fetchArticles, fetchArticleById, fetchCommentsByArticleId, insertComment, incrementVotes } = require("../models/articles.model.js")
 const { fetchUserByUsername } = require("../models/users.model.js")
+const { checkTopicExists } = require("../models/topics.model.js")
 
-exports.retrieveArticles = async (sort_by, order) => {
-    const articlesData = await fetchArticles(sort_by, order);
+exports.retrieveArticles = async (sort_by, order, topic) => {
+    if (topic) {
+        await checkTopicExists(topic); 
+    }
+    const articlesData = await fetchArticles(sort_by, order, topic);
     return articlesData;
 }
 
