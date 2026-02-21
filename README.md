@@ -9,6 +9,13 @@ The project follows the **MVC (Model-View-Controller)** architecture and uses a 
 ## Live Link
 View the hosted API documentation here: https://nc-news-abigail.onrender.com/api/
 
+## Requirements
+
+To run this project locally, you will need the following minimum versions:
+
+- **Node.js**: v18.0.0 or higher
+- **Postgres**: v14.0 or higher
+
 ## Installation and Setup
 
 ### 1. Clone the respository
