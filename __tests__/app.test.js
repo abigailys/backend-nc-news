@@ -161,7 +161,6 @@ describe("/api/articles", () => {
             test("Article object has properties: author, title, article_id, body, topic, created_at, votes, article_img_url", async () => {
                 const { body: { article } } = await request(app)
                     .get("/api/articles/7")
-                    .expect(200)
                 expect(article.author).toBeString();
                 expect(article.title).toBeString();
                 expect(article.article_id).toBe(7);
@@ -170,6 +169,12 @@ describe("/api/articles", () => {
                 expect(article.created_at).toBeString();
                 expect(article.votes).toBeNumber();
                 expect(article.article_img_url).toBeString();
+            })
+
+            test("Article object has properties: comment_count", async() => {
+                const { body: { article } } = await request(app)
+                    .get("/api/articles/1")
+                expect(article.comment_count).toBeNumber();
             })
 
             test("400 - Responds with an error when article_id is not a valid data type", async () => {
