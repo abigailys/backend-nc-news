@@ -12,24 +12,78 @@ View the hosted API documentation here: https://nc-news-abigail.onrender.com/api
 ## Installation and Setup
 
 ### 1. Clone the respository
-```
+```bash
 git clone https://github.com/abigailys/backend-nc-news
 cd backend-nc-news
 ```
 
+### 2. Install dependencies
+```bash
+npm install
+```
 
+### 3. Configure database
+`.env` files are ignored by Git, anyone who cloned this project will not have access to the required environment variables. To set up, create two `.env` files for your databases:
 
-# Setting up environment variables
-.env files are ignored by Git, anyone who cloned this project will not have access to the required environment variables. To set up, create two .env files for your databases:
-    .env.test (for the test database)
-    .env.development (for the development database)
+.env.test:
+```
+PGDATABASE=nc_news_test
+``` 
 
+.env.development:
+``` 
+PGDATABASE=nc_news
+``` 
 Note: Double-check that your .gitignore file includes .env.* so these files aren't pushed to GitHub.
 
-To connect to both test and development databases locally, specify these in your .env files, referring to database names specified in the setup-dbs.sql file.
-    `PGDATABASE=nc_news_test` in .env.test, and
-    `PGDATABASE=nc_news` in .env.development
+### 4. Setup and Seed
+Run the following commands to create the databases and fill the development database with initial data.
+```bash
+npm run setup-dbs
+npm run seed
+```
+
+### 5. Run the Test Sute
+Ensure the API is functioning correctly by running the tests:
+```npm test```
+
+### 6. Start the Server
+Run the server in development mode (using Nodemon):
+```npm run dev```
+
+The documentation will be available at http://localhost:9090/api.
 
 
-npm i -D supertest
-npm i express
+## API Endpoints
+
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| **GET** | `/api` | Responds with JSON/HTML describing all available endpoints. |
+| **GET** | `/api/topics` | Responds with an array of all topics. |
+| **GET** | `/api/articles` | Responds with all articles (supports `topic`, `sort_by`, and `order` queries). |
+| **GET** | `/api/articles/:article_id` | Responds with a single article object including `comment_count`. |
+| **GET** | `/api/articles/:article_id/comments` | Responds with an array of comments for a specific article. |
+| **POST** | `/api/articles/:article_id/comments` | Adds a new comment to an article (requires `username` and `body`). |
+| **PATCH** | `/api/articles/:article_id` | Updates article votes (accepts `{ inc_votes: newVote }`). |
+| **DELETE** | `/api/comments/:comment_id` | Deletes a comment by ID (returns 204 No Content). |
+| **GET** | `/api/users` | Responds with an array of all user objects. |
+
+---
+
+## Implementation Details
+
+### TDD (Test Driven Development)
+Developed using a strict **Red-Green-Refactor** workflow to ensure high code coverage and reliability across all endpoints.
+
+### SQL Injection Protection
+All queries are **parameterised** using `$1` syntax or protected by **whitelist arrays** for identifiers like column names and sort orders.
+
+### Dynamic Queries
+The articles endpoint supports advanced filtering and sorting logic built with **dynamic SQL string construction** to handle multiple optional queries simultaneously.
+
+### Relational Integrity
+Uses `Promise.all` and **cross-model existence checks** to ensure appropriate **404 errors** are triggered when resources (like articles or users) are missing.
+
+### Error Handling
+**Centralised middleware** in `app.js` handles custom status codes, PSQL-specific errors (such as foreign key violations), and 500 safety nets.
