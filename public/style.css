@@ -9,22 +9,30 @@ body {
 header {
     background-color: rgb(13, 73, 91);
     color: rgb(255, 156, 56);
-    padding: 1.5rem;
+    padding: 3rem 1rem;
     text-align: center;
+    border-bottom: 4px solid rgb(255, 156, 56);
 }
 
 nav ul {
     display: flex;
     justify-content: center;
-    gap: 20px;
-    margin-top: 1rem;
+    flex-wrap: wrap;
+    color: white;
+    margin: 2rem;
 }
 
 nav a {
     color: white;
-    padding: 5px 10px;
-    border: 1px solid transparent;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 8px 16px;
+    border: 1.5px solid rgba(255, 255, 255, 0.2); /* Subtle borders */
+    border-radius: 8px;
     transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.05);
+    margin: 1rem;
 }
 
 nav a:hover {
