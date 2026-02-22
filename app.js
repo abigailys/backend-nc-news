@@ -1,4 +1,5 @@
 const express = require("express")
+const apiRouter = require("./routes/api.routes.js");
 
 // creating the server
 const app = express()
@@ -9,18 +10,7 @@ app.use(express.json())
 // Serve static files from the "public" folder
 app.use("/api", express.static('public'))
 
-// hook up the router
-const topicsRouter = require("./routes/topics.routes.js")
-app.use("/api/topics", topicsRouter) // anything starting /api/topics goes to topics router
-
-const articlesRouter = require("./routes/articles.routes.js")
-app.use("/api/articles", articlesRouter)
-
-const usersRouter = require("./routes/users.routes.js")
-app.use("/api/users", usersRouter)
-
-const commentsRouter = require("./routes/comments.routes.js")
-app.use("/api/comments", commentsRouter)
+app.use("/api", apiRouter);
 
 // INVALID PATH CATCH-ALLL
 app.all("/*path", (req, res) => {
