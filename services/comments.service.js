@@ -6,6 +6,5 @@ exports.retrieveCommentById = async (commentId) => {
 }
 
 exports.deleteCommentById = async (commentId) => {
-    const deletionData = await Promise.all([fetchCommentById(commentId), deleteComment(commentId)]);
-    return deletionData[1];
+    await deleteComment(commentId);
 }

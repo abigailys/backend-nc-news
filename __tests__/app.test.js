@@ -414,7 +414,7 @@ describe("/api/comments", () => {
                 const { body } = await request(app)
                 .delete("/api/comments/999")
                 .expect(404)
-                expect(body.message).toBe("ID Not Found");
+                expect(body.message).toBe("Comment Not Found");
             });
         })
     })

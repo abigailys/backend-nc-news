@@ -15,9 +15,9 @@ exports.fetchCommentById = async (commentId) => {
 }
 
 exports.deleteComment = async (commentId) => {
-    const awaitingQuery = await db.query(`
+    const { rowCount } = await db.query(`
         DELETE FROM comments
         WHERE comment_id = $1
         `, [commentId])
-    return awaitingQuery.rows;
+    if (rowCount === 0) throw { status: 404, msg: 'Comment Not Found' }
 }
